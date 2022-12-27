@@ -1,3 +1,11 @@
+import * as tools from './modules/tools.js'
+
+
+//General
+
+let typingCache = ' '
+
+
 //Quotes
 
 const quotes = [
@@ -35,7 +43,8 @@ let cursorTime = 4000
 let cursorCounter = 0
 
 
-// Add a underline.
+// Add blanks.
+
 let timeCounter_addSpace = 0
 let spaceInterval = 100
 let addSpaceInterval
@@ -46,22 +55,23 @@ let blurTimeout
 let underlineCounter = 0
 let underline_return = 5
 
-// Delete words randomly.
+// Delete words randomly. 
+// [[d],[e],[l]]
 let deList = []
-
-
-
-function randInt(max) {
-  return Math.floor(Math.random() * max);
-}
+let delChars = ['d', 'e', 'l']
 
 
 
 
 
 
-function display(e){
-  $('#display').append(String.fromCharCode(e.keyCode))
+
+
+
+
+function display(list){
+  list = list.replace(/( )/g,'&nbsp;')
+  $('#display').append(list)
 }
 
 function addSpace(){
@@ -70,7 +80,7 @@ function addSpace(){
     console.log('addSpace')
     timeCounter_addSpace = 0
 
-    $('#display').scrollTop($('#display').height())
+    //$('#display').scrollTop($('#display').height())
 
     if(underlineCounter > (underline_return - 2)){
       $('#display').append('<br/>')
@@ -94,38 +104,22 @@ function blurInput(){
 
 function addDeList(e){
   let currentKeyCode = String.fromCharCode(e.keyCode)
-    if (currentKeyCode == 'd' ||
-        currentKeyCode == 'e' ||
-        currentKeyCode == 'l'){
+    if (delChars.includes(currentKeyCode)){
       deList.push(currentKeyCode)
     }
 }
 
 function delRandom(){
-  const nowdeList = $('#display').html().split('<br>')
-  console.log(nowdeList)
+  typingCache = tools.str2list(typingCache, 'char')
   
   for (let i = 0; i < deList.length; i++) {
-    if (deList[i] && deList [i+1] && deList[i+2]){
-      if(deList[i].toLowerCase() == 'd' && 
-        deList [i+1].toLowerCase() == 'e' && 
-        deList[i+2].toLowerCase() == 'l'){
-          const rI = randInt(nowdeList.length)
-          if(typeof(nowdeList[rI]) == 'string'){
-            const It = nowdeList[rI].split('')
-            for (let i = 0; i < It.length; i++) {
-              It[i] = '☐'
-            }
-            nowdeList[rI] = It.join('')
-          }
-      }
-    }
+    typingCache[tools.randInt(typingCache.length)] = '☐'
   }
 
   deList = []
-  let newdeList = nowdeList.flat(Infinity)
-  //$('#display').text(newdeList.join(' '))
+  typingCache = tools.list2str(typingCache, 'char')
 }
+
 
 $( document ).ready(function () {
 
@@ -138,8 +132,20 @@ $( document ).ready(function () {
 
 
   $( '#input' ).on('keypress', function(event){
-    display(event)
+    
     addDeList(event)
+    
+    if(event.keyCode == 13){
+      delRandom()
+
+      display(typingCache)
+      typingCache = ' '
+      $('#input').val('')
+    }else{
+      typingCache += String.fromCharCode(event.keyCode)
+      console.log(typingCache)
+    }
+
   })
 
   $('#input').on('input', function(){
@@ -158,7 +164,6 @@ $( document ).ready(function () {
       addSpaceInterval = setInterval(addSpace, spaceInterval)
     }
     $('#input').val('')
-    delRandom()
   })
 
   $('#input').on('mouseover', function(){
