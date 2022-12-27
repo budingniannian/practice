@@ -1,0 +1,81 @@
+h1{
+  font-family: 'zpix';
+}
+
+#display{
+  font-family: 'zpix';
+
+  margin: auto;
+  width: 50%;
+  height: 100px;
+  margin-bottom: 30px;
+  margin-top: 30px;
+
+  border: 2px dotted rgb(172, 0, 0);
+  border-radius: 0%;
+
+  white-space: pre-line;
+  word-break: break-all;
+  word-wrap: break-word;
+  overflow: auto;
+}
+
+#input{
+  font-family: 'zpix';
+
+  margin: auto;
+  width: 100%;
+  height: 40px;
+
+  border: 1px dotted gray;
+  border-radius: 0%;
+
+  text-align: center;
+}
+
+#quotes{
+  font-family: 'zpix';
+}
+
+#cursor{
+  position:absolute;
+
+  font-family: 'zpix';
+  font-size: small;
+}
+
+
+
+
+
+body{
+  cursor: url(/imgs/penCursor_20.svg) 0 19, pointer;
+}
+
+
+
+@keyframes fadeOut{
+  from{
+    opacity: 1.0;
+  }
+
+  to{
+    opacity: 0.0;
+  }
+}
+
+@keyframes fadeIn{
+  from{
+    opacity: 0.0;
+  }
+
+  to{
+    opacity: 1.0;
+  }
+}
+
+@font-face {
+	font-family: 'zpix';
+	src: url('fonts/zpix.woff2') format('woff2');
+}
+
