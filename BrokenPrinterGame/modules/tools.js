@@ -20,9 +20,20 @@ export function list2str(li, type){
   }
 }
 
-export function replaceStr(list, oldOne, newOne){
-  for (let i = 0; index < list.length; i++) {
-    
-    
+export function textColor(words,r,g,b,a){
+  return "<span style='color:rgb(" + r + "," + g + "," + b + "," + a + ")'>" + words + "</span>"
+}
+
+export function remap(num, inMin, inMax, outMin, outMax) {
+
+  const result = (num - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+
+  if(result < outMin){
+    return outMin
+  }else if(result > outMax){
+    return outMax
+  }else{
+    return result
   }
+  
 }

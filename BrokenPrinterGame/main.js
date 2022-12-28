@@ -1,9 +1,9 @@
 import * as tools from './modules/tools.js'
 
 
-//General
+let a = 50
 
-let typingCache = ' '
+console.log(tools.remap(50,1,10,10,100))
 
 
 //Quotes
@@ -31,17 +31,48 @@ quotes.forEach(quote =>
   $ ('#quotes ul').append( $('<li>' + quote + '</li>'))
 )
 
+
+
+
+
+
+
+
+
+
+
+
+//Blur
+
+function blurInput(){ 
+  clearTimeout(blurTimeout)
+  blurTimeout = null
+
+  blurTimeout = setTimeout(() => {
+    $( '#input' ).blur()
+    console.log('blur')
+  }, blurTime);
+}
+
+//Display
+
+let typingCache = ' '
+
+function display(list){
+  list = list.replace(/( )/g,'&nbsp;')
+  $('#display').append(list)
+}
+
 // Cursor
+
+let cursorTime = 4000
+let cursorCounter = 0
 
 const cursorText = [
   '[try to type slowly ↓]',
   '[just wait when have no ideas →]',
   '[slide the cursor over the input box to start writing ☄]'
 ]
-
-let cursorTime = 4000
-let cursorCounter = 0
-
 
 // Add blanks.
 
@@ -55,29 +86,20 @@ let blurTimeout
 let underlineCounter = 0
 let underline_return = 5
 
-// Delete words randomly. 
-// [[d],[e],[l]]
-let deList = []
-let delChars = ['d', 'e', 'l']
-
-
-
-
-
-
-
-
-
-
-function display(list){
-  list = list.replace(/( )/g,'&nbsp;')
-  $('#display').append(list)
-}
+let opacityCounter = 1.0
 
 function addSpace(){
   if(timeCounter_addSpace >= 1000){
-    $('#display').append('...')
     console.log('addSpace')
+
+    if(opacityCounter >= 0.0){
+      $('#display').append(tools.textColor('...',0,0,0,opacityCounter))
+      opacityCounter -= 0.1
+    }else{
+      $('#display').append(tools.textColor('...',0,0,0,0))
+    }
+    
+    
     timeCounter_addSpace = 0
 
     //$('#display').scrollTop($('#display').height())
@@ -92,15 +114,10 @@ function addSpace(){
   timeCounter_addSpace += spaceInterval
 }
 
-function blurInput(){ 
-  clearTimeout(blurTimeout)
-  blurTimeout = null
-
-  blurTimeout = setTimeout(() => {
-    $( '#input' ).blur()
-    console.log('blur')
-  }, blurTime);
-}
+// Delete words randomly. 
+// [[d],[e],[l]]
+let deList = []
+let delChars = ['d', 'e', 'l']
 
 function addDeList(e){
   let currentKeyCode = String.fromCharCode(e.keyCode)
@@ -110,6 +127,7 @@ function addDeList(e){
 }
 
 function delRandom(){
+  console.log(typingCache)
   typingCache = tools.str2list(typingCache, 'char')
   
   for (let i = 0; i < deList.length; i++) {
@@ -119,6 +137,57 @@ function delRandom(){
   deList = []
   typingCache = tools.list2str(typingCache, 'char')
 }
+
+
+// Change text
+
+let typingIntervals = [1.0]
+let typingCounter = 0
+let textOpaMin = 0.5
+let textOpaMax = 1.0
+
+function pressCounter(){
+  typingCounter = (Date.now() - typingCounter)/1000
+  typingIntervals.push(typingCounter)
+  typingCounter = Date.now()
+}
+
+function textOpacity(){
+  
+  typingCache = tools.str2list(typingCache, 'char')
+  console.log(typingCache)
+  console.log(typingIntervals)
+  if(typingCache.length == typingIntervals.length){
+    for (let i = 0; i < typingCache.length; i++) {
+      console.log(tools.textColor(typingCache[i],0,0,0,
+        tools.remap(typingIntervals[i], 
+          Math.min(typingIntervals), Math.max(typingIntervals), 
+          textOpaMin, textOpaMax)))
+      typingCache[i] = tools.textColor(typingCache[i],0,0,0,
+        tools.remap(typingIntervals[i], 
+          Math.min(typingIntervals), Math.max(typingIntervals), 
+          textOpaMin, textOpaMax))
+    }
+  }else{
+    for (let i = 0; i < typingCache.length; i++) {
+      typingCache[i] = tools.textColor(typingCache[i],140,0,0,0.5)
+    }
+  }
+
+  typingIntervals = [1.0]
+  typingCache = tools.list2str(typingCache, 'char')
+  console.log(typingCache)
+}
+
+
+
+
+
+
+
+
+
+
 
 
 $( document ).ready(function () {
@@ -132,31 +201,50 @@ $( document ).ready(function () {
 
 
   $( '#input' ).on('keypress', function(event){
-    
-    addDeList(event)
-    
-    if(event.keyCode == 13){
+
+    if(event.keyCode !== 13){
+
+      typingCache += String.fromCharCode(event.keyCode)
+
+      pressCounter()
+
+      addDeList(event)
+
+    }else{
+
       delRandom()
 
+      textOpacity()
+      
       display(typingCache)
       typingCache = ' '
       $('#input').val('')
-    }else{
-      typingCache += String.fromCharCode(event.keyCode)
-      console.log(typingCache)
+  
     }
 
   })
 
-  $('#input').on('input', function(){
+  $( '#input' ).on('keydown', function(){
+    clearTimeout(blurTimeout)
+    blurTimeout = null
+  })
+
+  $( '#input' ).on('keyup', function(event){
     blurInput()
   })
 
+  $('#input').on('input', function(){
+    
+  })
+
   $('#input').on('focus', function(){
+    typingCounter = Date.now()
+
     clearInterval(addSpaceInterval)
     addSpaceInterval = null
+    opacityCounter = 1.0
 
-    blurInput()
+    //blurInput()
   })
 
   $('#input').on('blur', function(){
