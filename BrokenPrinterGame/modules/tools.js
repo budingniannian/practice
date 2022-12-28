@@ -21,7 +21,16 @@ export function list2str(li, type){
 }
 
 export function textColor(words,r,g,b,a){
-  return "<span style='color:rgb(" + r + "," + g + "," + b + "," + a + ")'>" + words + "</span>"
+  return '<span style="color:rgba(' + r + "," + g + "," + b + "," + a + ')">' + words + "</span>"
+}
+
+export function replaceItem(list, input, output){
+  for (let i = 0; i < list.length; i++){
+    if(list[i]==input){
+      list[i] = output
+    }
+  }
+  return list
 }
 
 export function remap(num, inMin, inMax, outMin, outMax) {

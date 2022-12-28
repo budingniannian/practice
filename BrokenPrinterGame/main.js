@@ -1,10 +1,6 @@
 import * as tools from './modules/tools.js'
 
 
-let a = 50
-
-console.log(tools.remap(50,1,10,10,100))
-
 
 //Quotes
 
@@ -59,7 +55,6 @@ function blurInput(){
 let typingCache = ' '
 
 function display(list){
-  list = list.replace(/( )/g,'&nbsp;')
   $('#display').append(list)
 }
 
@@ -127,7 +122,6 @@ function addDeList(e){
 }
 
 function delRandom(){
-  console.log(typingCache)
   typingCache = tools.str2list(typingCache, 'char')
   
   for (let i = 0; i < deList.length; i++) {
@@ -143,7 +137,7 @@ function delRandom(){
 
 let typingIntervals = [1.0]
 let typingCounter = 0
-let textOpaMin = 0.5
+let textOpaMin = 0.1
 let textOpaMax = 1.0
 
 function pressCounter(){
@@ -153,30 +147,29 @@ function pressCounter(){
 }
 
 function textOpacity(){
-  
   typingCache = tools.str2list(typingCache, 'char')
-  console.log(typingCache)
-  console.log(typingIntervals)
+
+  //replace the string space with html space
+  typingCache = tools.replaceItem(typingCache, ' ', '&nbsp;')
+
   if(typingCache.length == typingIntervals.length){
     for (let i = 0; i < typingCache.length; i++) {
-      console.log(tools.textColor(typingCache[i],0,0,0,
-        tools.remap(typingIntervals[i], 
-          Math.min(typingIntervals), Math.max(typingIntervals), 
-          textOpaMin, textOpaMax)))
+      // typingCache[i] = tools.textColor(typingCache[i],0,0,0,
+      //   tools.remap(typingIntervals[i], 
+      //     Math.min(...typingIntervals), Math.max(...typingIntervals), 
+      //     textOpaMin, textOpaMax).toFixed(2))
       typingCache[i] = tools.textColor(typingCache[i],0,0,0,
         tools.remap(typingIntervals[i], 
-          Math.min(typingIntervals), Math.max(typingIntervals), 
-          textOpaMin, textOpaMax))
+          0, 0.5, 
+          textOpaMin, textOpaMax).toFixed(2))
     }
   }else{
     for (let i = 0; i < typingCache.length; i++) {
       typingCache[i] = tools.textColor(typingCache[i],140,0,0,0.5)
     }
   }
-
   typingIntervals = [1.0]
   typingCache = tools.list2str(typingCache, 'char')
-  console.log(typingCache)
 }
 
 
@@ -215,7 +208,7 @@ $( document ).ready(function () {
       delRandom()
 
       textOpacity()
-      
+
       display(typingCache)
       typingCache = ' '
       $('#input').val('')
