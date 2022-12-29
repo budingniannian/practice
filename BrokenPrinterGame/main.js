@@ -66,6 +66,7 @@ let cursorCounter = 0
 const cursorText = [
   '[try to type slowly ↓]',
   '[just wait when have no ideas →]',
+  '[clicklicklick the cute icon ☟]',
   '[slide the cursor over the input box to start writing ☄]'
 ]
 
@@ -112,7 +113,7 @@ function addSpace(){
 // Delete words randomly. 
 // [[d],[e],[l]]
 let deList = []
-let delChars = ['d', 'e', 'l']
+let delChars = ['p', 'o', 'e', 'm']
 
 function addDeList(e){
   let currentKeyCode = String.fromCharCode(e.keyCode)
@@ -222,7 +223,7 @@ $( document ).ready(function () {
     blurTimeout = null
   })
 
-  $( '#input' ).on('keyup', function(event){
+  $( '#input' ).on('keyup', function(){
     blurInput()
   })
 
@@ -252,10 +253,36 @@ $( document ).ready(function () {
     console.log('mouseOver')
   })
 
+  
+
+  
+
   document.addEventListener('mousemove', function(event){
     $('#cursor').css('left', event.pageX + (30) + 'px')
     $('#cursor').css('top', event.pageY + (-12) + 'px')
   })
+
+
+  $('.icon').click(function (e) { 
+    $('#display').append(' ' + e.currentTarget.innerText + ' ')
+  });
+  $('.icon').mouseover(function (e) { 
+    e.currentTarget.style.background = "rgb(180, 100, 100)"
+  });
+  $('.icon').mouseout(function (e) { 
+    e.currentTarget.style.background = "rgb(255, 255, 255)"
+  });
+
+  
+  $('.titleDel').click(function (e) { 
+    delChars = tools.delByValue(delChars, e.currentTarget.innerText.toString())
+  });
+  $('.titleDel').mouseover(function (e) { 
+    e.currentTarget.style.background = "rgb(0, 0, 0)"
+  });
+  $('.titleDel').mouseout(function (e) { 
+    e.currentTarget.style.background = "rgb(255, 255, 255)"
+  });
 
 
 

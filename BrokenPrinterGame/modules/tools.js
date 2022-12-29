@@ -46,3 +46,11 @@ export function remap(num, inMin, inMax, outMin, outMax) {
   }
   
 }
+
+export function delByValue(arr, val){
+  let index = arr.indexOf(val.toLowerCase())
+  if (index > -1) {
+	  arr.splice(index, 1)
+  }
+  return arr
+}
