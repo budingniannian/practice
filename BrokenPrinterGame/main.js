@@ -29,16 +29,10 @@ quotes.forEach(quote =>
 
 
 
+// Blur
 
-
-
-
-
-
-
-
-
-//Blur
+let blurTime = 10000
+let blurTimeout
 
 function blurInput(){ 
   clearTimeout(blurTimeout)
@@ -50,7 +44,7 @@ function blurInput(){
   }, blurTime);
 }
 
-//Display
+// Display
 
 let typingCache = ' '
 
@@ -67,6 +61,7 @@ const cursorText = [
   '[try to type slowly ↓]',
   '[just wait when have no ideas →]',
   '[clicklicklick the cute icon ☟]',
+  '[what do the squares mean? ☐]',
   '[slide the cursor over the input box to start writing ☄]'
 ]
 
@@ -75,9 +70,6 @@ const cursorText = [
 let timeCounter_addSpace = 0
 let spaceInterval = 100
 let addSpaceInterval
-
-let blurTime = 3000
-let blurTimeout
 
 let underlineCounter = 0
 let underline_return = 5
@@ -161,7 +153,7 @@ function textOpacity(){
       //     textOpaMin, textOpaMax).toFixed(2))
       typingCache[i] = tools.textColor(typingCache[i],0,0,0,
         tools.remap(typingIntervals[i], 
-          0, 0.5, 
+          0, 0.3, 
           textOpaMin, textOpaMax).toFixed(2))
     }
   }else{
@@ -205,10 +197,12 @@ $( document ).ready(function () {
       addDeList(event)
 
     }else{
-
+      
       delRandom()
 
       textOpacity()
+
+      typingCache += '<br>'
 
       display(typingCache)
       typingCache = ' '
